@@ -12,6 +12,11 @@
   <mat-icon>{{ panelOpen() ? 'close' : 'tune' }}</mat-icon>
 </button>
 
+<button mat-flat-button class="audio" [class.playing]="audioOn()" (click)="toggleAudio()">
+  <mat-icon>{{ audioOn() ? 'volume_up' : 'volume_off' }}</mat-icon>
+  {{ audioOn() ? 'Mute drone' : 'Enable audio' }}
+</button>
+
 @if (panelOpen()) {
   <mat-card class="panel" appearance="outlined">
     <mat-card-header>
@@ -71,10 +76,6 @@
       </mat-expansion-panel>
 
       <div class="actions">
-        <button mat-flat-button class="audio" [class.playing]="audioOn()" (click)="toggleAudio()">
-          <mat-icon>{{ audioOn() ? 'volume_up' : 'volume_off' }}</mat-icon>
-          {{ audioOn() ? 'Mute drone' : 'Drone audio' }}
-        </button>
         <button mat-icon-button matTooltip="Save screenshot" aria-label="Save screenshot" (click)="screenshot()">
           <mat-icon>photo_camera</mat-icon>
         </button>
@@ -86,4 +87,19 @@
 
     <mat-card-footer class="hud">FPS: {{ fps() }}</mat-card-footer>
   </mat-card>
+}
+
+@if (audioPrompt()) {
+  <div class="audio-backdrop">
+    <mat-card class="audio-prompt" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Enable audio?</mat-card-title>
+        <mat-card-subtitle>A low ambient drone accompanies the visuals.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions align="end">
+        <button mat-button (click)="answerAudioPrompt(false)">No thanks</button>
+        <button mat-flat-button (click)="answerAudioPrompt(true)">Enable audio</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 }

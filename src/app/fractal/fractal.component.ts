@@ -41,6 +41,7 @@ export class FractalComponent implements OnDestroy {
   readonly zoom = signal(ZOOM_DEFAULT);
   readonly fps = signal(0);
   readonly audioOn = signal(false);
+  readonly audioPrompt = signal(true);
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('glcanvas');
   private readonly zone = inject(NgZone);
@@ -119,6 +120,11 @@ export class FractalComponent implements OnDestroy {
 
   setZoom(value: number): void {
     this.zoom.set(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, value)));
+  }
+
+  async answerAudioPrompt(enable: boolean): Promise<void> {
+    this.audioPrompt.set(false);
+    if (enable && !this.audioOn()) await this.toggleAudio();
   }
 
   async toggleAudio(): Promise<void> {

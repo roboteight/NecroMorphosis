@@ -48,10 +48,10 @@ mat-card-title {
 .slider-label { letter-spacing: 0.5px; }
 .slider-value { opacity: 0.6; font-variant-numeric: tabular-nums; }
 .slider { grid-column: 1 / -1; margin: 0 -8px; }
-.actions { display: flex; align-items: center; gap: 4px; }
+.actions { display: flex; justify-content: flex-end; align-items: center; gap: 4px; }
 .zoom-row { display: flex; align-items: center; }
 .zoom-slider { flex: 1; min-width: 0; }
-.audio { flex: 1; &.playing { --mat-button-filled-container-color: #8c643c; } }
+.audio { position: absolute; top: 16px; right: 20px; &.playing { --mat-button-filled-container-color: #8c643c; } }
 
 .hud {
   padding: 8px 16px 12px;
@@ -59,4 +59,18 @@ mat-card-title {
   letter-spacing: 1px;
   text-transform: uppercase;
   opacity: 0.6;
+}
+
+.audio-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+.audio-prompt {
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  background: rgba(10, 12, 16, 0.92);
+  user-select: none;
 }
