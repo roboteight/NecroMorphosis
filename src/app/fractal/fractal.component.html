@@ -1,0 +1,89 @@
+<canvas
+  #glcanvas
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp()"
+  (pointercancel)="onPointerUp()"
+  (wheel)="onWheel($event)"
+></canvas>
+
+<button mat-mini-fab class="panel-toggle" [attr.aria-label]="panelOpen() ? 'Hide controls' : 'Show controls'"
+        (click)="togglePanel()">
+  <mat-icon>{{ panelOpen() ? 'close' : 'tune' }}</mat-icon>
+</button>
+
+@if (panelOpen()) {
+  <mat-card class="panel" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Necronomicon III // Biomech SDF</mat-card-title>
+      <mat-card-subtitle>Drag to look · scroll or +/− to zoom</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field class="preset-field" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Preset</mat-label>
+        <mat-select [value]="presetIndex()" (selectionChange)="setPreset($event.value)">
+          @for (p of presets; track p.name; let i = $index) {
+            <mat-option [value]="i">{{ p.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <p class="note">{{ presets[presetIndex()].note }}</p>
+
+      <div class="zoom-row">
+        <button mat-icon-button matTooltip="Zoom out" aria-label="Zoom out"
+                [disabled]="zoom() >= zoomMax" (click)="zoomOut()">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <mat-slider class="zoom-slider" [min]="zoomMin" [max]="zoomMax" step="0.1">
+          <input matSliderThumb aria-label="Zoom" [value]="zoom()" (valueChange)="setZoom($event)" />
+        </mat-slider>
+        <button mat-icon-button matTooltip="Zoom in" aria-label="Zoom in"
+                [disabled]="zoom() <= zoomMin" (click)="zoomIn()">
+          <mat-icon>add</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Reset view" aria-label="Reset view" (click)="resetView()">
+          <mat-icon>center_focus_strong</mat-icon>
+        </button>
+      </div>
+
+      <mat-button-toggle-group class="quality" hideSingleSelectionIndicator [value]="quality()"
+                               (change)="setQuality($event.value)" aria-label="Render quality">
+        <mat-button-toggle value="low">Low</mat-button-toggle>
+        <mat-button-toggle value="med">Med</mat-button-toggle>
+        <mat-button-toggle value="high">High</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-expansion-panel class="tuning" [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Fine tuning</mat-panel-title>
+        </mat-expansion-panel-header>
+        @for (s of sliders; track s.key) {
+          <div class="slider-row">
+            <span class="slider-label">{{ s.label }}</span>
+            <span class="slider-value">{{ settings()[s.key] }}</span>
+            <mat-slider class="slider" [min]="s.min" [max]="s.max" [step]="s.step">
+              <input matSliderThumb [attr.aria-label]="s.label" [value]="settings()[s.key]"
+                     (valueChange)="setSetting(s.key, $event)" />
+            </mat-slider>
+          </div>
+        }
+      </mat-expansion-panel>
+
+      <div class="actions">
+        <button mat-flat-button class="audio" [class.playing]="audioOn()" (click)="toggleAudio()">
+          <mat-icon>{{ audioOn() ? 'volume_up' : 'volume_off' }}</mat-icon>
+          {{ audioOn() ? 'Mute drone' : 'Drone audio' }}
+        </button>
+        <button mat-icon-button matTooltip="Save screenshot" aria-label="Save screenshot" (click)="screenshot()">
+          <mat-icon>photo_camera</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Fullscreen" aria-label="Toggle fullscreen" (click)="toggleFullscreen()">
+          <mat-icon>{{ fullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+
+    <mat-card-footer class="hud">FPS: {{ fps() }}</mat-card-footer>
+  </mat-card>
+}
